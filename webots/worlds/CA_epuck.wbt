@@ -1,0 +1,45 @@
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/robots/gctronic/e-puck/protos/E-puck.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/plants/protos/FlowerPot.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/appearances/protos/Parquetry.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/solids/protos/SolidBox.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.002273025325819075 0.9999946460436864 0.0023539838211879775 1.5370545108835874
+  position -0.5490178953833255 -0.22601353770857982 2.4537247576805634
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  floorSize 2.3 2.3
+  floorAppearance Parquetry {
+    type "dark strip"
+  }
+}
+E-puck {
+  translation -0.44 -0.44 -6.39634e-05
+  rotation 2.0441885962497826e-05 -4.753079705041686e-05 0.9999999986614764 1.58
+  controller "my_controller_epuck"
+  turretSlot [
+    Gyro {
+      name "gyro(1)"
+    }
+    GPS {
+    }
+  ]
+}
+FlowerPot {
+  translation 0.88 0.88 0
+}
+SolidBox {
+  translation 0 0 0.1
+  size 0.8 0.2 0.2
+}
