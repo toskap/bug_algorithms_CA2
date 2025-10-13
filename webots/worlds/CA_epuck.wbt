@@ -7,12 +7,13 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/plants/protos/FlowerPot.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/appearances/protos/Parquetry.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/solids/protos/SolidBox.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/robots/gctronic/e-puck/protos/E-puckDistanceSensor.proto"
 
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.002273025325819075 0.9999946460436864 0.0023539838211879775 1.5370545108835874
-  position -0.5490178953833255 -0.22601353770857982 2.4537247576805634
+  orientation 0.5773502691896258 -0.5773502691896258 -0.5773502691896258 4.188785307179587
+  position 0.43519018532020143 -0.13732083976619003 3.1416450523712234
 }
 TexturedBackground {
 }
@@ -25,14 +26,33 @@ RectangleArena {
   }
 }
 E-puck {
-  translation -0.44 -0.44 -6.39634e-05
-  rotation 2.0441885962497826e-05 -4.753079705041686e-05 0.9999999986614764 1.58
+  hidden position_0_0 157.69146688961743
+  hidden position_0_1 146.15256960883073
+  hidden rotation_1 0 -1 0 5.671351097051818
+  hidden rotation_2 0 -0.9999999999999999 0 4.643877763479344
+  translation -0.3 -0.3 -6.39536e-05
+  rotation 0.0005012885451859573 0.0048426006067797765 -0.9999881488943544 -1.57
   controller "my_controller_epuck"
   turretSlot [
     Gyro {
       name "gyro(1)"
     }
     GPS {
+    }
+  ]
+  groundSensorsSlot [
+    E-puckDistanceSensor {
+      name "ds_front"
+    }
+    E-puckDistanceSensor {
+      translation -0.03 0.035 0
+      rotation 0 0 1 1.57
+      name "ds_left"
+    }
+    E-puckDistanceSensor {
+      translation -0.03 -0.035 0
+      rotation 0 0 1 -1.5731853071795863
+      name "ds_right"
     }
   ]
 }

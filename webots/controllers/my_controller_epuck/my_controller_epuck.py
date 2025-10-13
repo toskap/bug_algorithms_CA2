@@ -30,8 +30,15 @@ for i in range(8):
     ps_sensors.append(robot.getDevice(sensor_name))
     ps_sensors[i].enable(timestep)
     
+ds_right = robot.getDevice('ds_right')
+ds_left = robot.getDevice('ds_left')
+ds_front = robot.getDevice('ds_front')
 
-    
+ds_right.enable(timestep)
+ds_left.enable(timestep)
+ds_front.enable(timestep)
+
+        
 ps_orientations = [1.27, 0.77, 0.0, 5.21, 4.21, 3.1415, 2.37, 1.87]
 
 # Define positions    
@@ -102,18 +109,37 @@ def orient_robot(must_orient, robot_angle):
 
     return left_speed, right_speed, must_orient, robot_angle
  
+# stop if at target
+def stop_at_target():
+    gps_values = gps.getValues()
+
+    at_target = False
+    distance_x = target_pos[0] - gps_values[0]
+    distance_y = target_pos[1] - gps_values[1]
+    accepted_dist_to_target = 0.1
+    
+    if abs(distance_x) < accepted_dist_to_target or abs(distance_y) < accepted_dist_to_target:
+        at_target = True
+        
+    return at_target
 
 # bug0 algorithm
 def bug0_algorithm(robot_angle):
     # Get sensor values
     gps_values = gps.getValues()
     gyro_values = gyro.getValues()
+    
     ps_values = []
     for i in range(8):
         ps_values.append(ps_sensors[i].getValue())
         
+    ds_right_values = ds_right.getValue()
+    ds_left_values = ds_left.getValue()
+    ds_front_values = ds_front.getValue()
+    # print("left: " + str(ds_left_values) + "  right: " + str(ds_right_values))
+        
     # Detect obstacle
-    obst_threshold = 75.0
+    obst_threshold = 80.0
     right_obstacle = ps_values[0] > obst_threshold or ps_values[1] > obst_threshold or ps_values[2] > obst_threshold
     left_obstacle = ps_values[5] > obst_threshold or ps_values[6] > obst_threshold or ps_values[7] > obst_threshold
     obstacle = False
@@ -121,43 +147,53 @@ def bug0_algorithm(robot_angle):
         if ps_values[i] > obst_threshold:
             obstacle = True
         
+    # Tolerance for turning to orient 
+    distance_x = target_pos[0] - gps_values[0]
+    distance_y = target_pos[1] - gps_values[1]
+    angle_to_target = math.atan(distance_y/distance_x)
+    angle = (robot_angle - angle_to_target) % (2*math.pi)
+    
+    tolerance = 0.01
+    # If angle is within tolerance, continue straight. Otherwise, rotate
+    within_tolerance = angle <= (0 + tolerance) and angle >= (0 - tolerance)
+    
     # If no obstacles, continue forward
-    left_speed = 0.8 * MAX_SPEED
-    right_speed = 0.8 * MAX_SPEED
+    # left_speed = 0.8 * MAX_SPEED
+    # right_speed = 0.8 * MAX_SPEED
     
     best_sensor = best_fit_ps_sensor(robot_angle)
     
-    for i in range(8):
-        print(str(i) + ": " + str(ps_values[i]))
+    # for i in range(8):
+        # print(str(i) + ": " + str(ps_values[i]))
     
     # If obstacles, apply bug0 algorithm
     # if obstacle and ps_values[5] < 120.0 and ps_values[6] <:
-    if obstacle:
+    print(ds_left_values)
+    if obstacle and ds_left_values <= 215.0 and ds_front_values > 72.0:
         left_speed  = 0.03 * MAX_SPEED
         right_speed = -0.03 * MAX_SPEED 
         
         robot_angle += (gyro_values[2]*timestep/1000)
-       
+        print("if")
+        
+    # elif obstacle and ds_left_values > 235.0:
+    elif obstacle and ds_front_values < 72.0:
+        left_speed = 0.8 * MAX_SPEED
+        right_speed = 0.8 * MAX_SPEED
+        print("elif")
     # If a clear path to the target is spotted by the best oriented sensor, start going straight towards the target 
 
-    elif obstacle and ps_values[best_sensor] < 65:
-        # print("ELIF")
-        print(best_sensor)
-        distance_x = target_pos[0] - gps_values[0]
-        distance_y = target_pos[1] - gps_values[1]
-        angle_to_target = start_angle - math.atan(distance_y/distance_x)
-        angle = (robot_angle - angle_to_target) % (2*math.pi)
-
+    # elif ps_values[best_sensor] < 65:
+    elif within_tolerance == False:
+        print("elif2")
         left_speed  = 0.03 * MAX_SPEED  # left speed makes you turn right
         right_speed = -0.03 * MAX_SPEED  # right speed makes you turn left
-        
-        robot_angle += (gyro_values[2]*timestep/1000)  # /1000 for converting timestep from ms to s
-        
-        tolerance = 0.01
-        if angle <= (0 + tolerance) and angle >= (0 - tolerance):
-            left_speed = 0.8 * MAX_SPEED
-            right_speed = 0.8 * MAX_SPEED
-
+        robot_angle += (gyro_values[2]*timestep/1000)  # /1000 for converting timestep from ms to s          
+    
+    else: 
+        print("else")
+        left_speed = 0.8 * MAX_SPEED
+        right_speed = 0.8 * MAX_SPEED
 
     return left_speed, right_speed, robot_angle               
 
@@ -165,18 +201,23 @@ def bug0_algorithm(robot_angle):
 initial_setup = True
 
 # Run this loop to get the robot to get the robot to move
-while robot.step(timestep) != -1:
+at_target = False
+while robot.step(timestep) != -1 and at_target == False:
+    at_target = stop_at_target()
+        
     gyro_values = gyro.getValues()
+    
     # left_speed, right_speed, robot_angle = bug0_algorithm(robot_angle)
      
     # Initial set up
-    if initial_setup == True:
-        left_speed, right_speed, initial_setup, robot_angle = orient_robot(initial_setup, robot_angle)
+    # if initial_setup == True:
+        # left_speed, right_speed, initial_setup, robot_angle = orient_robot(initial_setup, robot_angle)
             
     
     # bug0 algorithm
-    if initial_setup == False:
-        left_speed, right_speed, robot_angle = bug0_algorithm(robot_angle)
+    # if initial_setup == False:
+        # left_speed, right_speed, robot_angle = bug0_algorithm(robot_angle)
+    left_speed, right_speed, robot_angle = bug0_algorithm(robot_angle)
      
     # left_speed  = 0.3 * MAX_SPEED
     # right_speed = -0.3 * MAX_SPEED 
@@ -184,7 +225,7 @@ while robot.step(timestep) != -1:
     left_motor.setVelocity(left_speed)
     right_motor.setVelocity(right_speed)
     
-
+    
 
 
     pass
