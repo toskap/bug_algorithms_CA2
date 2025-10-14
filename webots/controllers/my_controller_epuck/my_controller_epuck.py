@@ -21,7 +21,7 @@ MAX_SPEED = 6.28
 gps = robot.getDevice('gps')
 gps.enable(timestep)
 
-gyro = robot.getDevice('gyro(1)')
+gyro = robot.getDevice('gyro')
 gyro.enable(timestep)
 
 ps_sensors = []
@@ -30,6 +30,8 @@ for i in range(8):
     ps_sensors.append(robot.getDevice(sensor_name))
     ps_sensors[i].enable(timestep)
     
+ps_orientations = [1.27, 0.77, 0.0, 5.21, 4.21, 3.1415, 2.37, 1.87]
+
 ds_right = robot.getDevice('ds_right')
 ds_left = robot.getDevice('ds_left')
 ds_front = robot.getDevice('ds_front')
@@ -38,8 +40,6 @@ ds_right.enable(timestep)
 ds_left.enable(timestep)
 ds_front.enable(timestep)
 
-        
-ps_orientations = [1.27, 0.77, 0.0, 5.21, 4.21, 3.1415, 2.37, 1.87]
 
 # Define positions    
 target_pos = [0.88, 0.88]  # Target position (flowerpot) remains unchanged
@@ -91,32 +91,36 @@ def bug0_algorithm(robot_angle):
     angle_to_target = math.atan(distance_y/distance_x)
     angle = (robot_angle - angle_to_target) % (2*math.pi)
     
-    tolerance = 0.01
+    tolerance = 0.1
     # If angle is within tolerance, continue straight. Otherwise, rotate
     within_tolerance = angle <= (0 + tolerance) and angle >= (0 - tolerance)
     
  
     # Rotate to move next to obstacle state
     if obstacle and ds_left_values <= 215.0 and ds_front_values > 72.0:
+        print("STATE: Rotate to move alongside obstacle")
         left_speed  = 0.03 * MAX_SPEED
         right_speed = -0.03 * MAX_SPEED 
         
         robot_angle += (gyro_values[2]*timestep/1000)
-        print("if")
+    
     # Move alongside obstacle state
     elif obstacle and ds_front_values < 72.0:
+        print("STATE: Move alongside obstacle")
         left_speed = 0.8 * MAX_SPEED
-        right_speed = 0.8 * MAX_SPEED
-        print("elif")
+        right_speed = 0.8 * MAX_SPEED    
+    
     # Orient to target state
     elif within_tolerance == False:
-        print("elif2")
+        print("STATE: Orient to target")
         left_speed  = 0.03 * MAX_SPEED 
-        right_speed = -0.03 * MAX_SPEED  
+        right_speed = -0.03 * MAX_SPEED 
+         
         robot_angle += (gyro_values[2]*timestep/1000)  # /1000 for converting timestep from ms to s          
+    
     # Move to target state
     else: 
-        print("else")
+        print("STATE: Move to target")
         left_speed = 0.8 * MAX_SPEED
         right_speed = 0.8 * MAX_SPEED
 
@@ -127,8 +131,11 @@ initial_setup = True
 
 # Run this loop to get the robot to get the robot to move
 at_target = False
+
 while robot.step(timestep) != -1 and at_target == False:
     at_target = stop_at_target()
+    
+    
         
     left_speed, right_speed, robot_angle = bug0_algorithm(robot_angle)
 
