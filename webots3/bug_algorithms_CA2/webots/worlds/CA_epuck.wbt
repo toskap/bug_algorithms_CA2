@@ -1,0 +1,73 @@
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/robots/gctronic/e-puck/protos/E-puck.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/plants/protos/FlowerPot.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/appearances/protos/Parquetry.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/solids/protos/SolidBox.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/robots/gctronic/e-puck/protos/E-puckDistanceSensor.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation 0.3985654832998818 -0.3911627714239794 -0.8295403798332203 4.508184386005399
+  position 0.5559700550420601 -1.9365011577445055 2.431813335294396
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  floorSize 2.3 2.3
+  floorTileSize 2.3 2.3
+  floorAppearance Parquetry {
+    type "dark strip"
+  }
+}
+E-puck {
+  hidden position_0_0 175.6375882196494
+  hidden position_0_1 160.61412461366513
+  hidden translation_1 0 0.02599999999999998 0.02
+  hidden rotation_1 0 -0.9999999999999999 0 0.2916003813790333
+  hidden translation_2 0 -0.025999999999999995 0.02
+  hidden rotation_2 0 -1 0 2.748693373004122
+  translation -0.5 -0.5 -6.24147e-05
+  rotation 0.0010986597891302092 -0.0042679960799590685 0.9999902885309083 1.57
+  controller "my_controller_epuck"
+  turretSlot [
+    Gyro {
+      name "gyro(1)"
+    }
+    GPS {
+    }
+  ]
+  groundSensorsSlot [
+    Pen {
+      translation 0 0 0.005
+      inkColor 1 0 0
+      leadSize 0.004
+    }
+    E-puckDistanceSensor {
+      name "ds_front"
+    }
+    E-puckDistanceSensor {
+      translation -0.03 0.035 0
+      rotation 0 0 1 1.57
+      name "ds_left"
+    }
+    E-puckDistanceSensor {
+      translation -0.03 -0.035 0
+      rotation 0 0 1 -1.5731853071795863
+      name "ds_right"
+    }
+  ]
+}
+FlowerPot {
+  translation 0.88 0.88 0
+}
+SolidBox {
+  translation 0 0 0.1
+  size 0.8 0.2 0.2
+}
