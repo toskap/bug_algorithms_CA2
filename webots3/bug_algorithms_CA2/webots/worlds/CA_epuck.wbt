@@ -12,8 +12,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.3985654832998818 -0.3911627714239794 -0.8295403798332203 4.508184386005399
-  position 0.5559700550420601 -1.9365011577445055 2.431813335294396
+  orientation -0.5727673508960804 0.5763584092695471 0.5828795294156105 2.080679240519309
+  position -5.0102517715309644e-05 -0.041622761418708056 3.827111889628915
 }
 TexturedBackground {
 }
@@ -27,14 +27,12 @@ RectangleArena {
   }
 }
 E-puck {
-  hidden position_0_0 175.6375882196494
-  hidden position_0_1 160.61412461366513
-  hidden translation_1 0 0.02599999999999998 0.02
-  hidden rotation_1 0 -0.9999999999999999 0 0.2916003813790333
-  hidden translation_2 0 -0.025999999999999995 0.02
-  hidden rotation_2 0 -1 0 2.748693373004122
-  translation -0.5 -0.5 -6.24147e-05
-  rotation 0.0010986597891302092 -0.0042679960799590685 0.9999902885309083 1.57
+  hidden position_0_0 157.69146688961743
+  hidden position_0_1 146.15256960883073
+  hidden rotation_1 0 -1 0 5.671351097051818
+  hidden rotation_2 0 -0.9999999999999999 0 4.643877763479344
+  translation -0.88 -0.88 -6.46134e-05
+  rotation 0 0 1 1.57
   controller "my_controller_epuck"
   turretSlot [
     Gyro {
@@ -46,7 +44,7 @@ E-puck {
   groundSensorsSlot [
     Pen {
       translation 0 0 0.005
-      inkColor 1 0 0
+      inkColor 0 1 0.5
       leadSize 0.004
     }
     E-puckDistanceSensor {
@@ -68,6 +66,16 @@ FlowerPot {
   translation 0.88 0.88 0
 }
 SolidBox {
-  translation 0 0 0.1
+  translation -0.07 0 0.1
   size 0.8 0.2 0.2
+}
+SolidBox {
+  translation -0.67 -0.46 0.1
+  name "box(1)"
+  size 0.4 0.4 0.2
+}
+SolidBox {
+  translation 0.66 0.27 0.1
+  name "box(2)"
+  size 0.2 0.4 0.2
 }

@@ -58,10 +58,14 @@ def stop_at_target():
     at_target = False
     distance_x = target_pos[0] - gps_values[0]
     distance_y = target_pos[1] - gps_values[1]
-    accepted_dist_to_target = 0.05
+    accepted_dist_to_target = 0.1
     
-    if abs(distance_x) < accepted_dist_to_target or abs(distance_y) < accepted_dist_to_target:
+    if abs(distance_x) < accepted_dist_to_target and abs(distance_y) < accepted_dist_to_target:
         at_target = True
+        print(distance_x)
+        print(distance_y)
+        print(target_pos[0])
+        print(target_pos[1])
         
     return at_target
 
@@ -105,7 +109,7 @@ def bug0_algorithm(robot_angle):
         left_speed  = 0.03 * MAX_SPEED
         right_speed = -0.03 * MAX_SPEED 
         
-        robot_angle += (gyro_values[2]*timestep/1000)
+        # robot_angle += (gyro_values[2]*timestep/1000)
    
     # Move alongside obstacle state
     elif obstacle and ds_front_values < 72.0:
@@ -118,7 +122,7 @@ def bug0_algorithm(robot_angle):
         print("STATE: orient to target")
         left_speed  = 0.03 * MAX_SPEED 
         right_speed = -0.03 * MAX_SPEED  
-        robot_angle += (gyro_values[2]*timestep/1000)  # /1000 for converting timestep from ms to s          
+        # robot_angle += (gyro_values[2]*timestep/1000)  # /1000 for converting timestep from ms to s          
    
     # Move to target state
     else: 
@@ -134,6 +138,8 @@ initial_setup = True
 # Run this loop to get the robot to get the robot to move
 at_target = False
 while robot.step(timestep) != -1 and at_target == False:
+    gyro_values = gyro.getValues()
+
     at_target = stop_at_target()
         
     left_speed, right_speed, robot_angle = bug0_algorithm(robot_angle)
@@ -142,7 +148,10 @@ while robot.step(timestep) != -1 and at_target == False:
         print("Reached target. Stop robot.")
         left_speed = 0.0
         right_speed = 0.0
-
+        
+    robot_angle += (gyro_values[2]*timestep/1000)  # /1000 for converting timestep from ms to s          
+    robot_angle = robot_angle % (2*math.pi)
+        
     left_motor.setVelocity(left_speed)
     right_motor.setVelocity(right_speed)
     
